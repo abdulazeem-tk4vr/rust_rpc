@@ -17,7 +17,7 @@ pub struct RpcRequest {
 }
 
 /// Represents a JSON-RPC response.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RpcResponse {
     /// JSON-RPC protocol version.
     pub jsonrpc: String,
@@ -33,7 +33,7 @@ pub struct RpcResponse {
 }
 
 /// Represents an error response for JSON-RPC.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct RpcError {
     /// Error code.
     code: i32,

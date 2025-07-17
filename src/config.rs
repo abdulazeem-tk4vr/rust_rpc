@@ -1,8 +1,8 @@
 use serde::Deserialize;
-use std::fs;
+use std::{fs};
 use toml;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Config {
     pub port: u64,
     pub host: String,
