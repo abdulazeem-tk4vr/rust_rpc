@@ -2,13 +2,13 @@ mod api;
 mod config;
 mod methods;
 mod middleware;
-mod utils;
 mod shardeum;
+mod utils;
 
-use std::sync::Arc;
 use api::{RpcRequest, RpcResponse};
-use axum::{extract::Json, routing::post, Router, extract::State};
+use axum::{extract::Json, extract::State, routing::post, Router};
 use config::Config;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct SharedState {
@@ -18,7 +18,7 @@ pub struct SharedState {
 
 async fn rpc_method_handler(
     State(state): State<SharedState>,
-    Json(payload): Json<RpcRequest>
+    Json(payload): Json<RpcRequest>,
 ) -> Json<RpcResponse> {
     let method = payload.method.clone();
     let response = match method.as_str() {
@@ -26,7 +26,10 @@ async fn rpc_method_handler(
         _ => api::generate_error_response(404, "Incorrect method entered".to_string(), payload.id),
     };
     if state.shardeum.config.verbose {
-        println!("The verbose flags are enabled with response {:?}", Json(response.clone()));
+        println!(
+            "The verbose flags are enabled with response {:?}",
+            Json(response.clone())
+        );
     }
     Json(response)
 }
@@ -45,15 +48,15 @@ async fn main() {
     println!("Request timeout: {} seconds", config.request_timeout);
     println!("Verbose mode: {}", config.verbose);
 
-    let shm = Arc::new(shardeum::Shardeum{
-        config: Arc::new(config.clone())
+    let shm = Arc::new(shardeum::Shardeum {
+        config: Arc::new(config.clone()),
     });
 
-    let state = SharedState {
-        shardeum: shm,
-    };
+    let state = SharedState { shardeum: shm };
 
-    let app = Router::new().route("/", post(rpc_method_handler)).with_state(state);
+    let app = Router::new()
+        .route("/", post(rpc_method_handler))
+        .with_state(state);
 
     // run it
     let listener = tokio::net::TcpListener::bind(format!("{}:{}", config.host, config.port))

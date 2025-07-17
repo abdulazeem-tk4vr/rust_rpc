@@ -1,6 +1,6 @@
-use std::sync::Arc;
 use crate::config;
+use std::sync::Arc;
 
-pub struct Shardeum{
-    pub config: Arc<config::Config>
+pub struct Shardeum {
+    pub config: Arc<config::Config>,
 }
