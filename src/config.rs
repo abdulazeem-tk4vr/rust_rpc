@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use std::fs;
+use std::env;
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Config {
@@ -29,5 +30,34 @@ impl Config {
             .map_err(|err| format!("\nFailed to parse config file: {}", err))?;
 
         Ok(parsed_config)
+    }
+
+    pub fn load_from_env(config: &mut Config) {
+        if let Ok(port_var) = env::var("PORT") {
+            if let Ok(port) = port_var.parse::<u64>() {
+                println!("Setting port from ENV: {}", port);
+                config.port = port;
+            }
+        }
+
+        if let Ok(host) = env::var("HOST") {
+            config.host = host;
+        }
+
+        if let Ok(node_urls) = env::var("NODE_URLS") {
+            config.node_urls = node_urls.split(',').map(|url| url.to_string()).collect();
+        }
+
+        if let Ok(request_timeout_var) = env::var("REQUEST_TIMEOUT") {
+            if let Ok(request_timeout) = request_timeout_var.parse::<u64>() {
+                config.request_timeout = request_timeout;
+            }
+        }
+
+        if let Ok(verbose_var) = env::var("VERBOSE") {
+            if let Ok(verbose) = verbose_var.parse::<bool>() {
+                config.verbose = verbose;
+            }
+        }
     }
 }
