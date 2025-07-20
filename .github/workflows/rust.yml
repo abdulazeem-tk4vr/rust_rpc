@@ -24,23 +24,3 @@ jobs:
       run: cargo test --verbose
     - name: Generate docs
       run: cargo doc --no-deps --document-private-items
-    - name: Create index redirect to your crate
-      run: |
-        echo '<!DOCTYPE HTML>' > ./target/doc/index.html
-        echo '<html lang="en-US">' >> ./target/doc/index.html
-        echo '<head>' >> ./target/doc/index.html
-        echo '<meta charset="UTF-8">' >> ./target/doc/index.html
-        echo '<meta http-equiv="refresh" content="0; url=rustpc_shardeum/">' >> ./target/doc/index.html
-        echo '<script type="text/javascript">window.location.href = "rustpc_shardeum/"</script>' >> ./target/doc/index.html
-        echo '<title>Shardeum RPC Documentation</title>' >> ./target/doc/index.html
-        echo '</head>' >> ./target/doc/index.html
-        echo '<body>' >> ./target/doc/index.html
-        echo 'If you are not redirected automatically, follow this <a href="rustpc_shardeum/">link to documentation</a>.' >> ./target/doc/index.html
-        echo '</body>' >> ./target/doc/index.html
-        echo '</html>' >> ./target/doc/index.html
-    - name: Deploy to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      if: github.ref == 'refs/heads/main'
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./target/doc/
