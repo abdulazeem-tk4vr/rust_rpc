@@ -36,10 +36,13 @@ async fn rpc_method_handler(
 
 #[tokio::main]
 async fn main() {
-    let config = Config::load().unwrap_or_else(|err| {
+    let mut config = Config::load().unwrap_or_else(|err| {
         eprintln!("Failed to load config: {}", err);
         Config::default()
     });
+
+    // update config with ENV vars if they are set
+    Config::load_from_env(&mut config);
 
     println!("The RPC configs are here as follows:");
     println!("Launching the Shardeum RPC server... ");
